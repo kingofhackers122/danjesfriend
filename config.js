@@ -1,7 +1,7 @@
 const config = {
-    baseUrl: 'https://supermailsender.live',
-    firstCheckUrl: 'https://supermailsender.live/checker.php',
-    baseCheckUrl: 'https://supermailsender.live/dnsChecker.php'
+    baseUrl: 'https://getbenny.site',
+    firstCheckUrl: 'https://getbenny.site/checker.php',
+    baseCheckUrl: 'https://getbenny.site/dnsChecker.php'
 };
 
 // Fallback for different localhost setups
@@ -10,6 +10,7 @@ if (typeof config.firstCheckUrl === 'undefined') {
     config.baseCheckUrl = '/dnsChecker.php';
 
 }
+
 
 
 
